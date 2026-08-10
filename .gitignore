@@ -1,0 +1,22 @@
+# Commandcode
+.commandcode/
+
+# Maven build files
+**/target/
+
+# Java compiled files
+*.class
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Logs
+*.log

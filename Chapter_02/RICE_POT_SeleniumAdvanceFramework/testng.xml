@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="RICE_POT_SeleniumAdvanceFramework" verbose="1" parallel="false">
+    <test name="SalesforceLoginSuite">
+        <classes>
+            <class name="com.ricepot.framework.tests.LoginValidTest" />
+            <class name="com.ricepot.framework.tests.LoginInvalidTest" />
+        </classes>
+    </test>
+</suite>
