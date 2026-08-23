@@ -1,0 +1,46 @@
+{
+  "name": "NANCY VERMA",
+  "headline": "QA Team Lead  ·  Test Strategy & Automation Architecture  ·  Web | Mobile | API",
+  "contact": {"location":"Bengaluru, India","phone":"+91-9663820477",
+    "email":"nancy.verma0591@gmail.com",
+    "linkedin":"https://www.linkedin.com/in/nancy-verma-09818974",
+    "github":"https://github.com/nancy-verma05"},
+  "sections": [
+    {"type":"paragraph","title":"Professional Summary","parts":[
+      {"t":"QA Team Lead with 8+ years in software quality assurance, including 4+ years leading manual and automation QA engineers. Owns test strategy across Web, Mobile, and API platforms, scaling Java automation frameworks into CI/CD and Agile/Scrum delivery. Delivered "},
+      {"t":"200+","b":true},{"t":" automated scripts that cut regression cycle time ","b":false},
+      {"t":"~35%","b":true},{"t":", with zero critical production escapes across four years."}]},
+    {"type":"labelled","title":"QA Leadership & Strategy","items":[
+      {"label":"Team Leadership & Mentorship","body":"Led and mentored 4 manual and automation QA engineers — regular 1-on-1s, performance goal-setting, and onboarding of new joiners."},
+      {"label":"QA Strategy & Architecture","body":"Defined and maintained test strategy across Web, Mobile, and API platforms, overseeing the design and scaling of automation frameworks."},
+      {"label":"Process Optimization","body":"Embedded QA into CI/CD pipelines (Jenkins, TeamCity) and Agile/Scrum workflows, enabling continuous validation without stalling delivery velocity."},
+      {"label":"Release Management & Reporting","body":"Partnered with product owners, developers, and client leadership on release readiness, risk, and sign-off; reported test coverage to senior stakeholders."}]},
+    {"type":"skills","title":"Skills","rows":[
+      {"label":"Leadership & Strategy","chips":["Test Strategy","Team Leadership","Mentoring","Release Readiness","Risk Management","Test Coverage Reporting"]},
+      {"label":"Languages & Frameworks","chips":["Java","Selenium WebDriver","Selenide","Appium","TestNG","Cucumber (BDD)","Page Object Model"]},
+      {"label":"API & Mobile Testing","chips":["RestAssured","Postman","SoapUI","SeeTest","SeeTest Cloud"]},
+      {"label":"CI/CD, Version Control & AI","chips":["Jenkins","TeamCity","Git","GitHub","GitHub Copilot","Prompt Engineering"]},
+      {"label":"Test Management & Practices","chips":["Rally","JIRA","Azure DevOps","Agile/Scrum","Functional","Regression","Integration","UAT","Accessibility (WCAG)"]},
+      {"label":"Platforms & Domains","chips":["Airline & Travel","E-commerce","Telecom","Salesforce","SFMC","SAP Hybris"]}]},
+    {"type":"projects","title":"Projects","items":[
+      {"project":"Sabre — Airline Booking & Travel Technology Platform","dates":"Apr 2026 – Present","role":"Senior QA Automation Engineer  ·  Coforge Ltd.","bullets":[
+        {"verb":"Automated","parts":[{"t":"20+","b":true},{"t":" features spanning organization search, user search, and traveler profile management in Java, Selenide, and TestNG, extending regression coverage on a high-volume airline platform."}]},
+        {"verb":"Executed","parts":[{"t":"regression suites across "},{"t":"2","b":true},{"t":" CI servers (TeamCity and Jenkins), validating every build ahead of each sprint release."}]},
+        {"verb":"Accelerated","parts":[{"t":"script authoring with GitHub Copilot and prompt engineering, reducing automation development time by "},{"t":"40%","b":true},{"t":" while improving code review turnaround."}]}]},
+      {"project":"Philips & Telstra — E-commerce and Telecom Applications","dates":"Feb 2022 – Apr 2026","role":"Test Lead  ·  Wipro Ltd.","bullets":[
+        {"verb":"Led","parts":[{"t":"and mentored a QA team of "},{"t":"4","b":true},{"t":" manual and automation engineers across "},{"t":"2","b":true},{"t":" concurrent enterprise engagements, owning test strategy, planning, estimation, and release readiness sign-off."}]},
+        {"verb":"Re-architected","parts":[{"t":"and scaled automation frameworks from the ground up across "},{"t":"3","b":true},{"t":" platforms — Web (Selenium WebDriver), Mobile (Appium), and API (RestAssured) — on Page Object Model and data-driven design."}]},
+        {"verb":"Delivered","parts":[{"t":"200+","b":true},{"t":" automated regression scripts that cut regression cycle time by "},{"t":"~35%","b":true},{"t":", sustaining "},{"t":"zero","b":true},{"t":" critical defect escapes to production across "},{"t":"4","b":true},{"t":" years of releases."}]}]},
+      {"project":"Enterprise Product Quality Engineering","dates":"Oct 2019 – Feb 2022","role":"Test Engineer  ·  Tata Consultancy Services (TCS)","bullets":[
+        {"verb":"Automated","parts":[{"t":"functional and regression suites in Java and Selenium WebDriver across "},{"t":"2","b":true},{"t":" enterprise product releases, replacing repetitive manual execution."}]},
+        {"verb":"Designed","parts":[{"t":"and maintained "},{"t":"50","b":true},{"t":" test cases with full requirement traceability, supporting audit-ready release documentation."}]},
+        {"verb":"Drove","parts":[{"t":"sprint planning, reviews, and retrospectives with developers and business analysts over "},{"t":"2+","b":true},{"t":" years, reporting progress, risks, and blockers to stakeholders."}]}]},
+      {"project":"Application Quality Assurance","dates":"Dec 2016 – Oct 2018","role":"Associate Test Engineer  ·  WNS Global Services","bullets":[
+        {"verb":"Executed","parts":[{"t":"manual functional and regression test cases across multiple application modules, validating compliance with defined quality standards."}]},
+        {"verb":"Authored","parts":[{"t":"test plans, scenarios, and test cases from business requirements, building structured manual coverage for new feature releases."}]},
+        {"verb":"Tracked","parts":[{"t":"and closed defects in JIRA over "},{"t":"2","b":true},{"t":" years, partnering directly with developers to reproduce issues and verify fixes through to resolution."}]}]}]},
+    {"type":"education","title":"Education","items":[
+      {"degree":"Master of Computer Applications (MCA)","school":"Chandigarh Group of Colleges, Punjab Technical University","dates":"2012 – 2015"},
+      {"degree":"Bachelor of Science (B.Sc.)","school":"SD College, Ambala Cantt.","dates":"2009 – 2012"}]}
+  ]
+}
