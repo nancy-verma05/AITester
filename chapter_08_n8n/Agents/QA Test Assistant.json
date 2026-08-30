@@ -1,0 +1,343 @@
+{
+  "name": "QA Test Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "chat - User Requirement",
+        "height": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1056,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "e8d9d2d8-8d38-4152-80ac-2a2265452357",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "AI Agent - understand request",
+        "height": 592,
+        "width": 736,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -752,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "7cca67d0-b87d-4e4c-bf2f-831d5065c238",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Final Output",
+        "height": 592,
+        "width": 304,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "f329deec-c075-432e-84cb-de0d9d5a6a66",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1008,
+        -96
+      ],
+      "id": "82af4358-dcdb-4c65-b84c-41f92edff11c",
+      "name": "When chat message received",
+      "webhookId": "ad1205ca-0405-496a-8a60-85d576544480"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a professional QA Test Assistant.\n\nYour job is to generate a complete QA deliverable from the user's requirements.\n\nReturn ONLY valid JSON.\n\nDo NOT use Markdown.\nDo NOT use ```json.\nDo NOT add explanations before or after the JSON.\nDo NOT include comments.\nDo NOT leave any string unfinished.\n\nThe response MUST follow exactly this structure:\n\n{\n  \"test_strategy\": {},\n  \"test_plan\": [],\n  \"test_cases\": []\n}\n\nRules:\n\n1. Every JSON string must use double quotes.\n2. Escape any double quotes inside a string.\n3. Do not put raw line breaks inside JSON strings.\n4. Complete every array and object before finishing.\n5. Generate concise but complete content so the response does not get unnecessarily long.\n6. The test_cases array must contain detailed test cases.\n7. Each test case should contain:\n   - id\n   - title\n   - description\n   - steps\n   - expected_result\n   - level\n   - type\n   - priority\n   - risk\n\nReturn valid JSON only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -464,
+        -272
+      ],
+      "id": "ffca816f-40ac-47eb-a776-e9b8bbb9055a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -576,
+        80
+      ],
+      "id": "8d46645f-92ac-4491-bcad-0151df690101",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Create a professional software Test Plan based on the user's application requirements.\n\nUse this tool whenever the user asks for:\n- a Test Plan\n- QA Test Plan\n- testing plan\n- test planning document\n- software test plan",
+        "workflowId": {
+          "__rl": true,
+          "value": "Xvx4T7EWy3ZEehri",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Xvx4T7EWy3ZEehri",
+          "cachedResultName": "Test Plan Creator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "requirements": "={{ $json.chatInput }}"
+          },
+          "matchingColumns": [
+            "requirements"
+          ],
+          "schema": [
+            {
+              "id": "requirements",
+              "displayName": "requirements",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -432,
+        32
+      ],
+      "id": "7dea138e-9eae-4f32-83b5-b5a32e449fdd",
+      "name": "Call 'Test Plan Creator'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "CDThqHxXUkYbxeMN",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/CDThqHxXUkYbxeMN",
+          "cachedResultName": "Test Case Creator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "requirements": "={{ $json.chatInput }}"
+          },
+          "matchingColumns": [
+            "requirements"
+          ],
+          "schema": [
+            {
+              "id": "requirements",
+              "displayName": "requirements",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -288,
+        64
+      ],
+      "id": "1ed47f4f-4c94-45ec-b13d-6eea6cf317bd",
+      "name": "Call 'Test Case Creator'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bDgZYOQJSHHEX50l",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/bDgZYOQJSHHEX50l",
+          "cachedResultName": "Test Strategy Creator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "requirements": "={{ $json.chatInput }}"
+          },
+          "matchingColumns": [
+            "requirements"
+          ],
+          "schema": [
+            {
+              "id": "requirements",
+              "displayName": "requirements",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        -160
+      ],
+      "id": "41b1cb8d-8e95-41bf-8646-0b988dcd2601",
+      "name": "Call 'Test Strategy Creator'"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -48
+      ],
+      "id": "7ce5fe10-d9d5-4b8c-b464-9f082b602902",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "cPF9aIqmii1db9RO",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"rows\": [\n    {\n      \"Section\": \"Test Strategy\",\n      \"ID\": \"\",\n      \"Title\": \"\",\n      \"Description\": \"Philips Login Page\",\n      \"Level\": \"\",\n      \"Type\": \"\",\n      \"Priority\": \"\",\n      \"Risk\": \"\",\n      \"Mitigation\": \"\"\n    },\n    {\n      \"Section\": \"Strategy Objective\",\n      \"ID\": \"\",\n      \"Title\": \"\",\n      \"Description\": \"Verify functional correctness of authentication flow\",\n      \"Level\": \"\",\n      \"Type\": \"\",\n      \"Priority\": \"\",\n      \"Risk\": \"\",\n      \"Mitigation\": \"\"\n    },\n    {\n      \"Section\": \"Testing Level\",\n      \"ID\": \"\",\n      \"Title\": \"\",\n      \"Description\": \"Component validation including form validators and OTP generator\",\n      \"Level\": \"Unit\",\n      \"Type\": \"\",\n      \"Priority\": \"\",\n      \"Risk\": \"\",\n      \"Mitigation\": \"\"\n    },\n    {\n      \"Section\": \"Test Plan\",\n      \"ID\": \"TP-001\",\n      \"Title\": \"Login Functional Testing\",\n      \"Description\": \"Test functional aspects of the login page\",\n      \"Level\": \"\",\n      \"Type\": \"\",\n      \"Priority\": \"\",\n      \"Risk\": \"\",\n      \"Mitigation\": \"\"\n    },\n    {\n      \"Section\": \"Test Case\",\n      \"ID\": \"TC-001\",\n      \"Title\": \"Login with valid credentials\",\n      \"Description\": \"Verify that a valid user can log in successfully\",\n      \"Level\": \"System\",\n      \"Type\": \"Functional\",\n      \"Priority\": \"High\",\n      \"Risk\": \"None\",\n      \"Mitigation\": \"User is successfully logged in\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "5ffde1d9-2eba-483a-9baa-52442af4159f",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Test Plan Creator'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Test Case Creator'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Test Strategy Creator'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e31b3821-46fc-416b-a09d-a1a65ceb5476",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bad0231832c6cbc5d8864b7670a25b4d94fa6665eaaf8a0b3d1d68ad4f0a12ad"
+  },
+  "nodeGroups": [],
+  "id": "ZXCxeCDQ7BPsoTtD",
+  "tags": []
+}

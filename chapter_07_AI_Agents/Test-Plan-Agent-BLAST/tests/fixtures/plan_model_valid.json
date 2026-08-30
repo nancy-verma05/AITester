@@ -1,0 +1,81 @@
+{
+  "meta": { "key": "DEMO-1", "status": "DRAFT", "model": "openai/gpt-oss-120b" },
+  "scope": {
+    "in_scope": ["Password reset request and the time-limited email link"],
+    "out_of_scope": ["Not specified in ticket - see G-1"],
+    "objective": "Verify a user can reset their password via a time-limited email link."
+  },
+  "gaps": [
+    {
+      "id": "G-1",
+      "area": "Test data",
+      "classification": "Missing",
+      "evidence": "ABSENT: no test email accounts, mailbox, or user records are specified anywhere in the ticket",
+      "evidence_ref": "none",
+      "question_for_author": "Which test email accounts / mailbox should QA use for the reset flow?",
+      "severity": "P1"
+    },
+    {
+      "id": "G-2",
+      "area": "Negative paths",
+      "classification": "Ambiguous",
+      "evidence": "Reset email is sent within 1 minute",
+      "evidence_ref": "AC-1",
+      "question_for_author": "What is the expected behaviour when the email provider is unavailable or the address is unknown?",
+      "severity": "P2"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "TS-1", "priority": "P0", "type": "Positive",
+      "scenario": "A reset email is sent within 1 minute of a valid password reset request",
+      "preconditions": null, "maps_to": "AC-1", "basis": "confirmed", "notes": null
+    },
+    {
+      "id": "TS-2", "priority": "P1", "type": "Boundary",
+      "scenario": "The reset link is rejected once 24 hours have passed since it was issued",
+      "preconditions": null, "maps_to": "AC-2", "basis": "assumption", "notes": null
+    },
+    {
+      "id": "TS-3", "priority": "P1", "type": "Negative",
+      "scenario": "No reset email is sent when the request is for an unknown email address",
+      "preconditions": null, "maps_to": "AC-1", "basis": "assumption", "notes": null
+    },
+    {
+      "id": "TS-4", "priority": "P1", "type": "Positive",
+      "scenario": "A reset link used within 24 hours of issue completes the password reset",
+      "preconditions": null, "maps_to": "AC-2", "basis": "confirmed", "notes": null
+    }
+  ],
+  "test_data_env": {
+    "test_data": "Not specified in ticket - see G-1",
+    "environment": "Not specified in ticket - see G-1",
+    "roles": "Not specified in ticket - see G-1"
+  },
+  "risks_assumptions": {
+    "assumptions": [
+      "Assumed the reset link is rejected (not merely flagged) once the 24 hour expiry passes",
+      "Assumed no reset email is sent for an unknown or unregistered email address"
+    ],
+    "risks": ["Email delivery timing depends on an external provider not described in the ticket"]
+  },
+  "entry_exit": {
+    "entry": ["Story is In Progress and a reset-capable test account exists"],
+    "exit": ["All P0 scenarios pass and every P0/P1 gap question is answered by the author"]
+  },
+  "references": [],
+  "human_review_gate": {
+    "assumed": [
+      "Assumed the reset link is rejected once 24 hours have passed since it was issued",
+      "Assumed no reset email is sent when the request is for an unknown email address"
+    ],
+    "could_not_confirm": [
+      "The exact expiry behaviour of the reset link",
+      "Behaviour when the email provider is unavailable"
+    ],
+    "open_questions": [
+      "Which test email accounts should QA use? (G-1)",
+      "Expected behaviour when the email provider is unavailable or the address is unknown? (G-2)"
+    ]
+  }
+}

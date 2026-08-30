@@ -1,0 +1,12 @@
+# Test Plan Agent — Python 3.11+
+requests>=2.32
+groq>=0.11
+jsonschema>=4.21
+markdownify>=0.11
+python-dotenv>=1.0
+
+# optional — better ADF fallback when Jira renderedFields HTML is missing/malformed
+atlas-doc-parser>=1.0 ; python_version >= "3.9"
+
+# dev / tests
+pytest>=8.0

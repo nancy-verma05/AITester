@@ -1,0 +1,511 @@
+{
+  "key": "KAN-6",
+  "fetched_at": "2026-08-29T19:01:24+00:00",
+  "ac_field_id": null,
+  "issue": {
+    "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+    "id": "10015",
+    "self": "https://nancyverma0591.atlassian.net/rest/api/3/issue/10015",
+    "key": "KAN-6",
+    "renderedFields": {
+      "summary": null,
+      "issuetype": null,
+      "components": null,
+      "subtasks": null,
+      "created": "Today 12:24 AM",
+      "description": "<p>View Profile Information</p>\n\n<ul>\n\t<li><b>Issue Type:</b> Story</li>\n\t<li><b>Summary:</b> User can view their basic profile details on a dedicated page.</li>\n\t<li><b>Description:</b>\n\t<ul>\n\t\t<li><b>As a</b> logged-in user,</li>\n\t\t<li><b>I want to</b> see my name, email address, and profile picture,</li>\n\t\t<li><b>So that</b> I know my current account status.</li>\n\t</ul>\n\t</li>\n\t<li><b>Acceptance Criteria:</b>\n\t<ul>\n\t\t<li>Page loads within 2 seconds.</li>\n\t\t<li>Displays user name, email, and avatar image.</li>\n\t\t<li>If no avatar exists, show a default placeholder icon.</li>\n\t</ul>\n\t</li>\n</ul>\n",
+      "reporter": null,
+      "fixVersions": null,
+      "priority": null,
+      "labels": null,
+      "environment": "",
+      "attachment": [],
+      "issuelinks": null,
+      "assignee": null,
+      "updated": "Today 12:25 AM",
+      "status": null
+    },
+    "names": {
+      "summary": "Summary",
+      "issuetype": "Issue Type",
+      "components": "Components",
+      "subtasks": "Sub-tasks",
+      "created": "Created",
+      "description": "Description",
+      "reporter": "Reporter",
+      "fixVersions": "Fix versions",
+      "priority": "Priority",
+      "labels": "Labels",
+      "environment": "Environment",
+      "attachment": "Attachment",
+      "issuelinks": "Linked Issues",
+      "assignee": "Assignee",
+      "updated": "Updated",
+      "status": "Status"
+    },
+    "changelog": {
+      "startAt": 0,
+      "maxResults": 3,
+      "total": 3,
+      "histories": [
+        {
+          "id": "10038",
+          "author": {
+            "self": "https://nancyverma0591.atlassian.net/rest/api/3/user?accountId=712020%3Af76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+            "accountId": "712020:f76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+            "emailAddress": "nancy.verma0591@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "24x24": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "16x16": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "32x32": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png"
+            },
+            "displayName": "NANCY verma",
+            "active": true,
+            "timeZone": "Asia/Calcutta",
+            "accountType": "atlassian"
+          },
+          "created": "2026-08-30T00:25:50.201+0530",
+          "items": [
+            {
+              "field": "status",
+              "fieldtype": "jira",
+              "fieldId": "status",
+              "from": "10004",
+              "fromString": "To Do",
+              "to": "10005",
+              "toString": "In Progress"
+            }
+          ]
+        },
+        {
+          "id": "10037",
+          "author": {
+            "self": "https://nancyverma0591.atlassian.net/rest/api/3/user?accountId=712020%3Af76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+            "accountId": "712020:f76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+            "emailAddress": "nancy.verma0591@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "24x24": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "16x16": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "32x32": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png"
+            },
+            "displayName": "NANCY verma",
+            "active": true,
+            "timeZone": "Asia/Calcutta",
+            "accountType": "atlassian"
+          },
+          "created": "2026-08-30T00:25:35.346+0530",
+          "items": [
+            {
+              "field": "description",
+              "fieldtype": "jira",
+              "fieldId": "description",
+              "from": null,
+              "fromString": "Allow users to update their personal information and view their account details.",
+              "to": null,
+              "toString": "View Profile Information\n\n* *Issue Type:* Story\n* *Summary:* User can view their basic profile details on a dedicated page.\n* *Description:*\n** *As a* logged-in user,\n** *I want to* see my name, email address, and profile picture,\n** *So that* I know my current account status.\n* *Acceptance Criteria:*\n** Page loads within 2 seconds.\n** Displays user name, email, and avatar image.\n** If no avatar exists, show a default placeholder icon."
+            }
+          ]
+        },
+        {
+          "id": "10036",
+          "author": {
+            "self": "https://nancyverma0591.atlassian.net/rest/api/3/user?accountId=712020%3Af76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+            "accountId": "712020:f76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+            "emailAddress": "nancy.verma0591@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "24x24": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "16x16": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+              "32x32": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png"
+            },
+            "displayName": "NANCY verma",
+            "active": true,
+            "timeZone": "Asia/Calcutta",
+            "accountType": "atlassian"
+          },
+          "created": "2026-08-30T00:24:29.934+0530",
+          "items": [
+            {
+              "field": "description",
+              "fieldtype": "jira",
+              "fieldId": "description",
+              "from": null,
+              "fromString": null,
+              "to": null,
+              "toString": "Allow users to update their personal information and view their account details."
+            }
+          ]
+        }
+      ]
+    },
+    "fields": {
+      "summary": "Dummy - Allow users to update their personal information and view their account details.",
+      "issuetype": {
+        "self": "https://nancyverma0591.atlassian.net/rest/api/3/issuetype/10008",
+        "id": "10008",
+        "description": "Tasks track small, distinct pieces of work.",
+        "iconUrl": "https://nancyverma0591.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium",
+        "name": "Task",
+        "subtask": false,
+        "avatarId": 10318,
+        "entityId": "12eb24f2-8467-486a-88ae-e916f012c342",
+        "hierarchyLevel": 0
+      },
+      "components": [],
+      "subtasks": [],
+      "created": "2026-08-30T00:24:13.030+0530",
+      "description": {
+        "type": "doc",
+        "version": 1,
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "View Profile Information"
+              }
+            ],
+            "attrs": {
+              "localId": "92388862c98d"
+            }
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "attrs": {
+                  "localId": "b07ee73cde56"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Issue Type:",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " Story"
+                      }
+                    ],
+                    "attrs": {
+                      "localId": "9568187ce1bf"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "localId": "e9c0af353555"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Summary:",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " User can view their basic profile details on a dedicated page."
+                      }
+                    ],
+                    "attrs": {
+                      "localId": "f93e6a25201f"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "localId": "0c26420532c8"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Description:",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      }
+                    ],
+                    "attrs": {
+                      "localId": "59978063b26e"
+                    }
+                  },
+                  {
+                    "type": "bulletList",
+                    "content": [
+                      {
+                        "type": "listItem",
+                        "attrs": {
+                          "localId": "5a077b1d6e01"
+                        },
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "As a",
+                                "marks": [
+                                  {
+                                    "type": "strong"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": " logged-in user,"
+                              }
+                            ],
+                            "attrs": {
+                              "localId": "3d305f429d39"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "listItem",
+                        "attrs": {
+                          "localId": "f467f60d6721"
+                        },
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "I want to",
+                                "marks": [
+                                  {
+                                    "type": "strong"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": " see my name, email address, and profile picture,"
+                              }
+                            ],
+                            "attrs": {
+                              "localId": "0b5d348a033d"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "listItem",
+                        "attrs": {
+                          "localId": "2f3bb72a8eb6"
+                        },
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "So that",
+                                "marks": [
+                                  {
+                                    "type": "strong"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": " I know my current account status."
+                              }
+                            ],
+                            "attrs": {
+                              "localId": "d29517563e04"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "attrs": {
+                      "localId": "4efa057766ea"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "attrs": {
+                  "localId": "cf2579202d81"
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Acceptance Criteria:",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      }
+                    ],
+                    "attrs": {
+                      "localId": "1a7f0707583e"
+                    }
+                  },
+                  {
+                    "type": "bulletList",
+                    "content": [
+                      {
+                        "type": "listItem",
+                        "attrs": {
+                          "localId": "22d91e5b64b5"
+                        },
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Page loads within 2 seconds."
+                              }
+                            ],
+                            "attrs": {
+                              "localId": "3460a46cb9bc"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "listItem",
+                        "attrs": {
+                          "localId": "562a58f5eae1"
+                        },
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Displays user name, email, and avatar image."
+                              }
+                            ],
+                            "attrs": {
+                              "localId": "a1c2184fc876"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "listItem",
+                        "attrs": {
+                          "localId": "ddc3d1c0898e"
+                        },
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "If no avatar exists, show a default placeholder icon."
+                              }
+                            ],
+                            "attrs": {
+                              "localId": "54b835d234b1"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "attrs": {
+                      "localId": "2d33abf4d2e6"
+                    }
+                  }
+                ]
+              }
+            ],
+            "attrs": {
+              "localId": "4c560620c9e3"
+            }
+          }
+        ]
+      },
+      "reporter": {
+        "self": "https://nancyverma0591.atlassian.net/rest/api/3/user?accountId=712020%3Af76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+        "accountId": "712020:f76578f2-b4dc-4750-b9b9-f51e3e1ea967",
+        "emailAddress": "nancy.verma0591@gmail.com",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+          "24x24": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+          "16x16": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png",
+          "32x32": "https://secure.gravatar.com/avatar/fdcde0fbdb2c577424ca5e730929ec83?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FNV-0.png"
+        },
+        "displayName": "NANCY verma",
+        "active": true,
+        "timeZone": "Asia/Calcutta",
+        "accountType": "atlassian"
+      },
+      "fixVersions": [],
+      "priority": {
+        "self": "https://nancyverma0591.atlassian.net/rest/api/3/priority/3",
+        "iconUrl": "https://nancyverma0591.atlassian.net/images/icons/priorities/medium_new.svg",
+        "name": "Medium",
+        "id": "3"
+      },
+      "labels": [],
+      "environment": null,
+      "attachment": [],
+      "issuelinks": [],
+      "assignee": null,
+      "updated": "2026-08-30T00:25:50.201+0530",
+      "status": {
+        "self": "https://nancyverma0591.atlassian.net/rest/api/3/status/10005",
+        "description": "This work item is being actively worked on at the moment by the assignee.",
+        "iconUrl": "https://nancyverma0591.atlassian.net/images/icons/statuses/generic.png",
+        "name": "In Progress",
+        "id": "10005",
+        "statusCategory": {
+          "self": "https://nancyverma0591.atlassian.net/rest/api/3/statuscategory/4",
+          "id": 4,
+          "key": "indeterminate",
+          "colorName": "yellow",
+          "name": "In Progress"
+        }
+      }
+    }
+  },
+  "comments": {
+    "startAt": 0,
+    "maxResults": 100,
+    "total": 0,
+    "comments": []
+  },
+  "remote_links": [],
+  "linked": {
+    "issues": [],
+    "isLast": true
+  }
+}

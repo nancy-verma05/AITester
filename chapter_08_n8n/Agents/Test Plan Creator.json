@@ -1,0 +1,104 @@
+{
+  "name": "Test Plan Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "requirements"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -528,
+        -16
+      ],
+      "id": "b75f45e6-a390-49f9-a342-2e2abaaafcc2",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a professional Test Plan based on these requirements:\n\n{{ $json.requirements }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a Senior QA Lead.  Create a professional Test Plan based on the user's requirements.  The Test Plan should contain:  1. Test Plan Title 2. Objective 3. Scope 4. In-Scope Features 5. Out-of-Scope Features 6. Testing Approach 7. Test Types 8. Test Environment 9. Test Data Requirements 10. Entry Criteria 11. Exit Criteria 12. Roles and Responsibilities 13. Defect Management 14. Automation Approach 15. Risks 16. Risk Mitigation 17. Dependencies 18. Assumptions 19. Test Deliverables 20. Test Schedule 21. Reporting and Metrics  Consider relevant: - Functional testing - Integration testing - System testing - Regression testing - Smoke testing - API testing - UI testing - Database testing - Security testing - Performance testing - Accessibility testing - Compatibility testing  Do not invent requirements.  If information is missing, clearly identify it under Assumptions or Test Planning Gaps.  Make the Test Plan practical and suitable for a real QA team.  User Requirements:\n\n{{ $json.requirements }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "01acc724-7e91-4072-a8d5-5b0792653505",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        192
+      ],
+      "id": "a5866b06-2689-478d-94d0-db6cb7268f6a",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "cPF9aIqmii1db9RO",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d328a1de-4cb0-438a-97bc-99f5f25fc335",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bad0231832c6cbc5d8864b7670a25b4d94fa6665eaaf8a0b3d1d68ad4f0a12ad"
+  },
+  "nodeGroups": [],
+  "id": "Xvx4T7EWy3ZEehri",
+  "tags": []
+}

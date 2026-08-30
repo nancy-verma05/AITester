@@ -1,0 +1,31 @@
+{
+  "key": "DEMO-1",
+  "url": "https://demo.atlassian.net/browse/DEMO-1",
+  "fetched_at": "2026-08-29T10:00:00+00:00",
+  "issue_type": "Story",
+  "status": "In Progress",
+  "priority": "High",
+  "summary": "User can reset password via email link",
+  "description_md": "As a user I can request a password reset.",
+  "acceptance_criteria": {
+    "source": "description",
+    "field_id": null,
+    "items_md": [
+      "Reset email is sent within 1 minute",
+      "Link expires after 24 hours"
+    ]
+  },
+  "labels": ["auth"],
+  "components": ["Identity"],
+  "fix_versions": ["2026.9"],
+  "environment_md": null,
+  "comments": [],
+  "links": [],
+  "remote_links": [],
+  "attachments": [],
+  "parent": null,
+  "subtasks": [],
+  "changelog_signal": { "ac_changed_count": 0, "last_ac_change": null, "status_flip_count": 1 },
+  "redactions": [],
+  "token_estimate": 120
+}

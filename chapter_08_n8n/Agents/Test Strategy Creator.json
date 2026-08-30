@@ -1,0 +1,104 @@
+{
+  "name": "Test Strategy Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "requirements"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -528,
+        -16
+      ],
+      "id": "cdb74a16-6e41-48fb-b4d2-bc9d716d9330",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a professional Test Strategy based on these requirements:\n\n{{ $json.requirements }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a Senior QA Architect.\n\nCreate a professional software Test Strategy based on the provided requirements.\n\nAnalyze:\n- application/domain\n- business functionality\n- user roles\n- functional requirements\n- non-functional requirements\n- integrations\n- dependencies\n- risks\n- platforms\n- environments\n- test data\n- security\n- performance\n- accessibility\n- compatibility\n\nThe Test Strategy should cover:\n\n1. Testing objectives\n2. Testing scope\n3. Out of scope\n4. Testing approach\n5. Test levels\n6. Test types\n7. Functional testing\n8. Integration testing\n9. System testing\n10. Regression testing\n11. Security testing\n12. Performance testing where relevant\n13. Accessibility testing\n14. Compatibility testing\n15. Test environment\n16. Test data strategy\n17. Automation strategy\n18. Defect management\n19. Risk and mitigation\n20. Entry criteria\n21. Exit criteria\n22. Deliverables\n\nDo not invent application behavior that was not provided.\n\nClearly identify assumptions and missing information.\n\nCreate a practical strategy that a real QA team could use."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "63354a3b-69b5-411f-b2c4-5fd74901cc4b",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        192
+      ],
+      "id": "c77e45e4-ed03-4bf8-9201-681287dc6736",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "cPF9aIqmii1db9RO",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "edf229b7-cd82-4658-a46e-c0bcfd821416",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bad0231832c6cbc5d8864b7670a25b4d94fa6665eaaf8a0b3d1d68ad4f0a12ad"
+  },
+  "nodeGroups": [],
+  "id": "bDgZYOQJSHHEX50l",
+  "tags": []
+}

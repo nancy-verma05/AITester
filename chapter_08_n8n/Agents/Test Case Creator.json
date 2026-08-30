@@ -1,0 +1,104 @@
+{
+  "name": "Test Case Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "requirements"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -528,
+        -16
+      ],
+      "id": "9155337c-dc9e-4e10-8237-08da601f73f0",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create detailed software test cases based on these requirements:\n\n{{ $json.requirements }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a Senior QA Engineer.\n\nCreate professional, realistic software test cases based on the user's requirements.\n\nAnalyze the requirements before creating test cases.\n\nCover relevant:\n- positive scenarios\n- negative scenarios\n- boundary conditions\n- validation\n- error handling\n- authentication\n- authorization\n- security\n- compatibility\n- usability\n- accessibility\n- performance\n- integration\n- data integrity\n- recovery/failure scenarios\n\nEach test case should contain:\n\n1. Test Case ID\n2. Title\n3. Objective\n4. Preconditions\n5. Test Data\n6. Test Steps\n7. Expected Result\n8. Priority\n9. Severity/Risk\n10. Test Type\n\nDo not invent application behavior that was not provided.\n\nIf information is missing:\n- identify the missing information\n- make assumptions only when safe\n- clearly label assumptions\n\nOptimize for realistic QA coverage rather than generating repetitive test cases."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "15c38b3b-e871-41b3-b297-7a8aca304ca2",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        192
+      ],
+      "id": "913c1dee-97fa-4757-9381-42d4c9bd4b47",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "cPF9aIqmii1db9RO",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ecb8a4e4-6127-4cd6-8acb-044501c7ddbd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bad0231832c6cbc5d8864b7670a25b4d94fa6665eaaf8a0b3d1d68ad4f0a12ad"
+  },
+  "nodeGroups": [],
+  "id": "CDThqHxXUkYbxeMN",
+  "tags": []
+}

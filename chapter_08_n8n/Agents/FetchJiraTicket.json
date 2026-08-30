@@ -1,0 +1,189 @@
+{
+  "name": "FetchJiraTicket",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Trigger",
+        "height": 400
+      },
+      "id": "cfb639a4-dd8a-49cb-9cf7-1654e427d00f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Action\n",
+        "height": 576,
+        "width": 368,
+        "color": 6
+      },
+      "id": "ef9abc04-9f07-4163-bfe3-23855176ae46",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Result",
+        "height": 400,
+        "color": 4
+      },
+      "id": "da14c00e-15c1-40cd-a378-3300dbd760fb",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7d98dbd1-2573-4f4b-9a29-b617f8836c37",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -544,
+        -64
+      ],
+      "webhookId": "952a9975-f3af-4e9a-af39-2968b8aa5c9a"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "6de56475-5e78-47e8-a76f-d92ef1468a46",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -224,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "id": "1464724d-2dac-443c-937c-4a027d438ed2",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        176
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "aQ0FOogbmgOx2D6A",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "10c57769-1341-42aa-a79e-b4bd59808635",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -176,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "id": "a3679c15-96a1-4911-8bb7-ac0200027305",
+      "name": "Get an issue in Jira Software",
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        144
+      ],
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "R5GUFzrIM8e3KaF7",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an issue in Jira Software": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8d3238ab-61b4-46b4-8b55-e15949965857",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb4ee6e0c2db0097c06469c77e06ade9be8948dd5e275cc88549f9bca5446ead"
+  },
+  "nodeGroups": [],
+  "id": "Co8w8NTHlU0JNbgr",
+  "tags": []
+}

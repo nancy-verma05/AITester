@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "key": "KAN-6",
+    "status": "DRAFT",
+    "model": "openai/gpt-oss-120b"
+  },
+  "scope": {
+    "objective": "Verify that a logged-in user can view their basic profile details correctly.",
+    "in_scope": [
+      "Page loads within 2 seconds",
+      "Displays user name, email, and avatar image",
+      "Shows default placeholder icon when no avatar exists"
+    ],
+    "out_of_scope": [
+      "Not specified in ticket — see G-5"
+    ]
+  },
+  "gaps": [
+    {
+      "id": "G-1",
+      "area": "Functional happy path",
+      "classification": "Missing",
+      "evidence": "ABSENT: acceptance criteria describing functional behavior.",
+      "evidence_ref": "none",
+      "question_for_author": "Please provide functional acceptance criteria (e.g., what fields must be displayed).",
+      "severity": "P0"
+    },
+    {
+      "id": "G-2",
+      "area": "Negative paths",
+      "classification": "Missing",
+      "evidence": "ABSENT: description of error handling or negative scenarios.",
+      "evidence_ref": "description",
+      "question_for_author": "What should the system do on error conditions (e.g., data load failure)?",
+      "severity": "P0"
+    },
+    {
+      "id": "G-3",
+      "area": "Boundaries/Empty states",
+      "classification": "Clear",
+      "evidence": "\"If no avatar exists, show a default placeholder icon.\"",
+      "evidence_ref": "description",
+      "question_for_author": "",
+      "severity": "P1"
+    },
+    {
+      "id": "G-4",
+      "area": "Test data",
+      "classification": "Missing",
+      "evidence": "ABSENT: specification of test data (e.g., user with/without avatar).",
+      "evidence_ref": "description",
+      "question_for_author": "What test data variations should be used for profile view testing?",
+      "severity": "P1"
+    },
+    {
+      "id": "G-5",
+      "area": "Environment & flags",
+      "classification": "Missing",
+      "evidence": "ABSENT: environment details or feature flags affecting profile page.",
+      "evidence_ref": "description",
+      "question_for_author": "Are there any environment constraints or feature flags for this feature?",
+      "severity": "P1"
+    },
+    {
+      "id": "G-6",
+      "area": "Roles/Permissions",
+      "classification": "Clear",
+      "evidence": "\"As a logged-in user\"",
+      "evidence_ref": "description",
+      "question_for_author": "",
+      "severity": "P1"
+    },
+    {
+      "id": "G-7",
+      "area": "Performance",
+      "classification": "Clear",
+      "evidence": "\"Page loads within 2 seconds.\"",
+      "evidence_ref": "description",
+      "question_for_author": "",
+      "severity": "P1"
+    },
+    {
+      "id": "G-8",
+      "area": "Security",
+      "classification": "Missing",
+      "evidence": "ABSENT: security requirements (e.g., data protection, access control).",
+      "evidence_ref": "description",
+      "question_for_author": "Are there any security considerations for viewing profile information?",
+      "severity": "P0"
+    },
+    {
+      "id": "G-9",
+      "area": "Accessibility",
+      "classification": "Missing",
+      "evidence": "ABSENT: accessibility requirements (e.g., alt text for avatar).",
+      "evidence_ref": "description",
+      "question_for_author": "Should the profile page meet any accessibility standards?",
+      "severity": "P1"
+    },
+    {
+      "id": "G-10",
+      "area": "Internationalization",
+      "classification": "Missing",
+      "evidence": "ABSENT: i18n requirements (e.g., language support).",
+      "evidence_ref": "description",
+      "question_for_author": "Is the profile page required to support multiple languages or locales?",
+      "severity": "P1"
+    },
+    {
+      "id": "G-11",
+      "area": "Regression surface",
+      "classification": "Missing",
+      "evidence": "ABSENT: regression testing scope.",
+      "evidence_ref": "description",
+      "question_for_author": "Which existing functionalities might be impacted by this change?",
+      "severity": "P1"
+    },
+    {
+      "id": "G-12",
+      "area": "Ambiguous wording",
+      "classification": "Not Applicable",
+      "evidence": "No ambiguous wording identified.",
+      "evidence_ref": "description",
+      "question_for_author": "",
+      "severity": "P2"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "TS-1",
+      "priority": "P0",
+      "type": "Positive",
+      "scenario": "Profile page loads within 2 seconds.",
+      "preconditions": null,
+      "maps_to": "G-7",
+      "basis": "confirmed",
+      "notes": null
+    },
+    {
+      "id": "TS-2",
+      "priority": "P0",
+      "type": "Positive",
+      "scenario": "Profile page displays the logged-in user's name, email address, and avatar image.",
+      "preconditions": null,
+      "maps_to": "G-1",
+      "basis": "confirmed",
+      "notes": null
+    },
+    {
+      "id": "TS-3",
+      "priority": "P1",
+      "type": "Boundary",
+      "scenario": "When the user has no avatar, the profile page shows a default placeholder icon.",
+      "preconditions": null,
+      "maps_to": "G-3",
+      "basis": "confirmed",
+      "notes": null
+    },
+    {
+      "id": "TS-4",
+      "priority": "P0",
+      "type": "Negative",
+      "scenario": "Unauthenticated user is prevented from accessing the profile page.",
+      "preconditions": null,
+      "maps_to": "G-6",
+      "basis": "assumption",
+      "notes": null
+    },
+    {
+      "id": "TS-5",
+      "priority": "P1",
+      "type": "Negative",
+      "scenario": "If the profile data fails to load, an error message is displayed to the user.",
+      "preconditions": null,
+      "maps_to": "G-2",
+      "basis": "assumption",
+      "notes": null
+    }
+  ],
+  "test_data_env": {
+    "test_data": "User with name, email, avatar; User without avatar",
+    "environment": "Not specified in ticket — see G-5",
+    "roles": "Logged-in user"
+  },
+  "risks_assumptions": {
+    "assumptions": [
+      "Unauthenticated users cannot view the profile page",
+      "Error handling displays a generic error message",
+      "Performance measured under standard network conditions"
+    ],
+    "risks": []
+  },
+  "entry_exit": {
+    "entry": [
+      "Profile page URL is reachable",
+      "User is logged in"
+    ],
+    "exit": [
+      "All test scenarios executed",
+      "Results documented"
+    ]
+  },
+  "references": [],
+  "human_review_gate": {
+    "assumed": [
+      "Unauthenticated users cannot view the profile page",
+      "Error handling displays a generic error message",
+      "Performance measured under standard network conditions"
+    ],
+    "could_not_confirm": [
+      "Exact URL of profile page",
+      "Error handling behavior details",
+      "Performance measurement environment"
+    ],
+    "open_questions": [
+      "Please provide functional acceptance criteria (e.g., what fields must be displayed).",
+      "What should the system do on error conditions (e.g., data load failure)?",
+      "Are there any security considerations for viewing profile information?"
+    ]
+  }
+}

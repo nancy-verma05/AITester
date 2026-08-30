@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://test-plan-agent.blast/schemas/agent_output.schema.json",
+  "title": "AgentOutput",
+  "description": "What one run returns to the caller. The real deliverable is the Markdown file at artifacts.test_plan_md; this object is the machine-readable receipt. No external writes (Q6).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "issue_key", "artifacts", "summary", "errors"],
+  "properties": {
+    "status": {
+      "enum": ["ok", "fetch_failed", "validation_failed"],
+      "description": "ok = plan produced and passed validate_plan. validation_failed = plan produced but still failed validation after one repair (bad scenarios dropped; see human_review_gate). fetch_failed = no plan: any hard failure before/at the model call (Jira 401/403/404, redact/budget refusal, Groq error) - the stage is in errors[]."
+    },
+    "issue_key": { "type": "string", "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$" },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["test_plan_md"],
+      "properties": {
+        "test_plan_md": { "type": "string", "description": "out/test-plan-<KEY>.md — repo template, DRAFT, HUMAN REVIEW GATE. On fetch_failed this is a stub (header + reason)." },
+        "plan_model_json": { "type": ["string", "null"], "description": "out/test-plan-<KEY>.json — the validated PlanModel. Null on fetch_failed." },
+        "raw_audit_json": { "type": ["string", "null"], "description": "out/raw/<KEY>.json — verbatim Jira payload." }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gaps", "p0", "p1", "p2", "open_questions", "ac_source", "llm_calls", "redactions"],
+      "properties": {
+        "gaps": { "type": "integer", "minimum": 0 },
+        "p0": { "type": "integer", "minimum": 0 },
+        "p1": { "type": "integer", "minimum": 0 },
+        "p2": { "type": "integer", "minimum": 0 },
+        "open_questions": { "type": "integer", "minimum": 0 },
+        "ac_source": { "enum": ["description", "custom_field", "none"] },
+        "llm_calls": { "type": "integer", "minimum": 0, "maximum": 2 },
+        "redactions": { "type": "integer", "minimum": 0 },
+        "cached_tokens": { "type": "integer", "minimum": 0, "description": "Groq usage.prompt_tokens_details.cached_tokens on the main call." },
+        "response_mode": { "type": ["string", "null"], "enum": ["json_schema", "json_object", null], "description": "Which Groq response_format actually produced the plan." },
+        "warnings": {
+          "type": "array",
+          "description": "Non-blocking validate_plan warnings (e.g. an AC with only positive scenarios).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "detail"],
+            "properties": { "code": { "type": "string" }, "detail": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "message"],
+        "properties": {
+          "stage": { "enum": ["discover_fields", "fetch_jira", "normalize_issue", "redact", "budget", "generate_test_plan", "validate_plan", "repair_plan", "render_plan"] },
+          "message": { "type": "string", "description": "Human-readable. MUST NOT contain the Jira token or any secret." }
+        }
+      }
+    }
+  }
+}

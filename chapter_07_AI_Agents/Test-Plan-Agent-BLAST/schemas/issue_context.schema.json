@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://test-plan-agent.blast/schemas/issue_context.schema.json",
+  "title": "IssueContext",
+  "description": "Minimised, normalised, redacted view of a Jira issue. Built by normalize_issue.py + redact.py. THE ONLY object sent to the model. If a field is not here, generate_test_plan.py cannot use it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["key", "url", "fetched_at", "issue_type", "summary", "acceptance_criteria", "description_md"],
+  "properties": {
+    "key": { "type": "string", "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$" },
+    "url": { "type": "string", "format": "uri" },
+    "fetched_at": { "type": "string", "format": "date-time" },
+    "issue_type": { "type": "string", "examples": ["Story", "Bug", "Task", "Sub-task", "Spike"] },
+    "status": { "type": ["string", "null"] },
+    "priority": { "type": ["string", "null"] },
+    "summary": { "type": "string" },
+    "description_md": {
+      "type": "string",
+      "description": "Normalised Markdown of the Jira description. May be empty string; empty is a finding, not an error."
+    },
+    "acceptance_criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "items_md"],
+      "properties": {
+        "source": { "enum": ["description", "custom_field", "none"] },
+        "field_id": { "type": ["string", "null"] },
+        "items_md": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "One entry per AC when the source is structured; otherwise a single blob entry. Empty array iff source == 'none'."
+        }
+      }
+    },
+    "labels": { "type": "array", "items": { "type": "string" } },
+    "components": { "type": "array", "items": { "type": "string" } },
+    "fix_versions": { "type": "array", "items": { "type": "string" } },
+    "environment_md": { "type": ["string", "null"] },
+    "comments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["author", "created", "body_md", "trust"],
+        "properties": {
+          "author": { "type": "string" },
+          "created": { "type": "string", "format": "date-time" },
+          "body_md": { "type": "string" },
+          "trust": { "const": "untrusted" }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "key"],
+        "properties": {
+          "type": { "type": "string", "examples": ["blocks", "is blocked by", "relates to", "is tested by", "duplicates"] },
+          "key": { "type": "string" },
+          "summary": { "type": ["string", "null"] },
+          "status": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "remote_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["filename", "mime"],
+        "properties": {
+          "filename": { "type": "string" },
+          "mime": { "type": "string" },
+          "size": { "type": ["integer", "null"] }
+        }
+      }
+    },
+    "parent": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["key"],
+      "properties": {
+        "key": { "type": "string" },
+        "summary": { "type": ["string", "null"] },
+        "type": { "type": ["string", "null"] }
+      }
+    },
+    "subtasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key"],
+        "properties": {
+          "key": { "type": "string" },
+          "summary": { "type": ["string", "null"] },
+          "status": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "changelog_signal": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Churn hints for the Risks section. Never used as a requirement source.",
+      "properties": {
+        "ac_changed_count": { "type": "integer", "minimum": 0 },
+        "last_ac_change": { "type": ["string", "null"], "format": "date-time" },
+        "status_flip_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "redactions": {
+      "type": "array",
+      "description": "What redact.py removed before the model saw the text.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "count"],
+        "properties": {
+          "kind": { "enum": ["email", "token", "secret", "pii", "url-credential", "other"] },
+          "count": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "token_estimate": { "type": "integer", "minimum": 0 }
+  }
+}

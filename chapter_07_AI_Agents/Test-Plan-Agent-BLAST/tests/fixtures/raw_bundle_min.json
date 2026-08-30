@@ -1,0 +1,34 @@
+{
+  "key": "DEMO-1",
+  "fetched_at": "2026-08-29T10:00:00+00:00",
+  "ac_field_id": "customfield_10068",
+  "issue": {
+    "self": "https://demo.atlassian.net/rest/api/3/issue/10001",
+    "fields": {
+      "summary": "User can reset password via email link",
+      "description": null,
+      "issuetype": { "name": "Story" },
+      "status": { "name": "In Progress" },
+      "priority": { "name": "High" },
+      "labels": ["auth"],
+      "components": [{ "name": "Identity" }],
+      "fixVersions": [{ "name": "2026.9" }],
+      "issuelinks": [],
+      "attachment": [],
+      "subtasks": [],
+      "environment": null,
+      "customfield_10068": null
+    },
+    "renderedFields": {
+      "description": "<p>As a user I can request a password reset.</p><h2>Acceptance Criteria</h2><ul><li>Reset email is sent within 1 minute</li><li>Link expires after 24 hours</li></ul>",
+      "environment": "",
+      "customfield_10068": ""
+    },
+    "changelog": { "histories": [
+      { "created": "2026-08-20T09:00:00+00:00", "items": [ { "fieldId": "status", "field": "status" } ] }
+    ] }
+  },
+  "comments": { "comments": [] },
+  "remote_links": [],
+  "linked": { "issues": [] }
+}

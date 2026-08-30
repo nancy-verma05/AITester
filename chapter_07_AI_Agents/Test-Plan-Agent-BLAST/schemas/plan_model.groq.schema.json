@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://test-plan-agent.blast/schemas/plan_model.groq.schema.json",
+  "title": "PlanModelGroq",
+  "description": "Strict-mode twin of plan_model.schema.json for Groq Structured Outputs (response_format.json_schema, strict:true). Same shape, but: every property listed in 'required', additionalProperties:false on every object, NO pattern/format/min*/max*/const, optionals expressed as ['type','null']. NOT authoritative — validate_plan.py enforces the full plan_model.schema.json. Keep in sync (tests/test_schema_sync.py).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "scope", "gaps", "scenarios", "test_data_env", "risks_assumptions", "entry_exit", "references", "human_review_gate"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "status", "model"],
+      "properties": {
+        "key": { "type": "string" },
+        "status": { "enum": ["DRAFT"] },
+        "model": { "type": "string" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["in_scope", "out_of_scope", "objective"],
+      "properties": {
+        "in_scope": { "type": "array", "items": { "type": "string" } },
+        "out_of_scope": { "type": "array", "items": { "type": "string" } },
+        "objective": { "type": "string" }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/GapItem" }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/TestScenario" }
+    },
+    "test_data_env": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["test_data", "environment", "roles"],
+      "properties": {
+        "test_data": { "type": "string" },
+        "environment": { "type": "string" },
+        "roles": { "type": "string" }
+      }
+    },
+    "risks_assumptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assumptions", "risks"],
+      "properties": {
+        "assumptions": { "type": "array", "items": { "type": "string" } },
+        "risks": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "entry_exit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entry", "exit"],
+      "properties": {
+        "entry": { "type": "array", "items": { "type": "string" } },
+        "exit": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "human_review_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assumed", "could_not_confirm", "open_questions"],
+      "properties": {
+        "assumed": { "type": "array", "items": { "type": "string" } },
+        "could_not_confirm": { "type": "array", "items": { "type": "string" } },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "$defs": {
+    "GapItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "area", "classification", "evidence", "evidence_ref", "question_for_author", "severity"],
+      "properties": {
+        "id": { "type": "string" },
+        "area": {
+          "enum": [
+            "Functional happy path",
+            "Negative paths",
+            "Boundaries/Empty states",
+            "Test data",
+            "Environment & flags",
+            "Roles/Permissions",
+            "Performance",
+            "Security",
+            "Accessibility",
+            "Internationalization",
+            "Regression surface",
+            "Ambiguous wording"
+          ]
+        },
+        "classification": { "enum": ["Clear", "Ambiguous", "Missing", "Not Applicable"] },
+        "evidence": { "type": "string" },
+        "evidence_ref": { "type": "string" },
+        "question_for_author": { "type": "string" },
+        "severity": { "enum": ["P0", "P1", "P2"] }
+      }
+    },
+    "TestScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "priority", "type", "scenario", "preconditions", "maps_to", "basis", "notes"],
+      "properties": {
+        "id": { "type": "string" },
+        "priority": { "enum": ["P0", "P1", "P2"] },
+        "type": { "enum": ["Positive", "Negative", "Boundary"] },
+        "scenario": { "type": "string" },
+        "preconditions": { "type": ["string", "null"] },
+        "maps_to": { "type": "string" },
+        "basis": { "enum": ["confirmed", "assumption"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://test-plan-agent.blast/schemas/agent_input.schema.json",
+  "title": "AgentInput",
+  "description": "The payload that drives one run of the Test Plan Agent. Config (Jira URL, tokens, model) is read from the environment, never from this payload.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["issue_key"],
+  "properties": {
+    "issue_key": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$",
+      "description": "Jira issue key, e.g. PROJ-1234."
+    },
+    "refresh": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, bypass the .tmp/raw cache and re-fetch from Jira."
+    },
+    "ac_field_id": {
+      "type": ["string", "null"],
+      "pattern": "^customfield_[0-9]+$",
+      "default": null,
+      "description": "Override for the discovered Acceptance Criteria custom field id."
+    }
+  }
+}
