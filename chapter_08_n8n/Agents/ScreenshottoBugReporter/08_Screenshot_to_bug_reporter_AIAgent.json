@@ -1,0 +1,512 @@
+{
+  "name": "08_Screenshot_to_bug_reporter_AIAgent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1 · Trigger\nTester uploads a screenshot (+ optional logs, notes, environment). Input is validated, secrets are redacted, logs are capped.",
+        "height": 440,
+        "width": 500
+      },
+      "id": "1a411e4f-31a1-4ff9-9cd8-6f73f443bfbf",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2 · AI Analysis\nOne bounded job: read the screenshot and fill in a fixed bug-report JSON.\nPrimary: **Groq qwen/qwen3.8-27b** (free). Fallback: OpenRouter Gemini 2.5 Flash-Lite. Bad JSON is auto-fixed by Groq gpt-oss-20b.",
+        "height": 840,
+        "width": 560,
+        "color": 6
+      },
+      "id": "f7050bab-1c2c-4803-9335-8c0f4c326909",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3 · Jira\nCreate the Bug in project **KAN**, then attach the screenshot.\n⚠️ After import, pick **Project = KAN** and **Issue Type = Bug** in *Create Jira Bug*.",
+        "height": 440,
+        "width": 900,
+        "color": 4
+      },
+      "id": "bd03ca1d-3171-4d45-ad46-8556a1b51150",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4 · Result\nTester sees the new issue key and link, or the error.",
+        "height": 640,
+        "width": 300,
+        "color": 5
+      },
+      "id": "85a6fcf9-558b-48ea-aa3a-5d9ae2beea4e",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "formTitle": "Screenshot → Bug Reporter",
+        "formDescription": "Upload a screenshot of the bug. Add error logs and what you were doing if you have them. A Jira Bug will be created in project KAN with the screenshot attached.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Screenshot",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".png, .jpg, .jpeg, .webp",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Error Logs",
+              "fieldType": "textarea",
+              "placeholder": "Paste console output, stack trace or API error (optional)"
+            },
+            {
+              "fieldLabel": "What were you doing?",
+              "fieldType": "textarea",
+              "placeholder": "e.g. Logged in as admin, opened Checkout, clicked Pay (optional)"
+            },
+            {
+              "fieldLabel": "Environment",
+              "placeholder": "e.g. Chrome 130 / Windows 11 / https://app.example.com/checkout / build 1.4.2 (optional)"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Create Bug"
+        }
+      },
+      "id": "90b24353-0419-4272-9ba0-7b930b9aa0c5",
+      "name": "Bug Report Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -640,
+        0
+      ],
+      "webhookId": "c5b6b2a2-3b92-48bb-8fa4-a13766fb3e05"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate the upload, redact secrets, and cap log size so one run stays under Groq's free 8K tokens/min.\nconst MODEL_LOG_LIMIT = 6000;   // chars sent to the model (~1.5k tokens)\nconst JIRA_LOG_LIMIT = 30000;   // chars kept in the Jira description\n\nconst item = $input.first();\nconst form = item.json;\nconst files = item.binary || {};\nconst fileKey = Object.keys(files)[0];\nif (!fileKey) throw new Error('No screenshot was uploaded.');\nconst shot = files[fileKey];\nif (!/^image\\/(png|jpe?g|webp)$/i.test(shot.mimeType || '')) {\n  throw new Error('Unsupported file type \"' + shot.mimeType + '\". Upload a PNG, JPG or WEBP screenshot.');\n}\n\nconst redact = (s) => String(s || '')\n  .replace(/\\bBearer\\s+[A-Za-z0-9\\-._~+\\/]+=*/gi, 'Bearer [REDACTED]')\n  .replace(/\\beyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+/g, '[REDACTED_JWT]')\n  .replace(/\\b(?:sk|gsk|pk|rk|ghp|gho|xox[abp])[-_][A-Za-z0-9_-]{10,}/g, '[REDACTED_KEY]')\n  .replace(/((?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|client[_-]?secret)[\"']?\\s*[:=]\\s*[\"']?)[^\\s\"',;&]+/gi, '$1[REDACTED]');\n\n// Keep the head and the tail (where the stack trace usually ends).\nconst clip = (s, n) => s.length <= n ? s\n  : s.slice(0, Math.floor(n * 0.4)) + '\\n... [' + (s.length - n) + ' chars truncated] ...\\n' + s.slice(-Math.ceil(n * 0.6));\n\n// LangChain prompt templates treat curly braces as variables, so swap them in model-bound text only.\nconst safeForPrompt = (s) => s.replace(/\\{/g, '(').replace(/\\}/g, ')');\n\nconst logs = redact(form['Error Logs']).trim();\nconst notes = redact(form['What were you doing?']).trim();\nconst environment = redact(form['Environment']).trim();\n\nreturn [{\n  json: {\n    userNotes: notes,\n    environment,\n    promptNotes: safeForPrompt(notes),\n    promptEnvironment: safeForPrompt(environment),\n    promptLogs: safeForPrompt(clip(logs, MODEL_LOG_LIMIT)),\n    logsForJira: clip(logs, JIRA_LOG_LIMIT),\n    hasLogs: logs.length > 0,\n    logsTruncated: logs.length > MODEL_LOG_LIMIT,\n    screenshotName: shot.fileName || 'screenshot.png',\n    submittedAt: form.submittedAt || new Date().toISOString(),\n  },\n  binary: { screenshot: shot },\n}];"
+      },
+      "id": "5765d510-3cd3-4ea1-a24b-7399689eec75",
+      "name": "Prepare Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyse the attached screenshot and draft a Jira bug report.\n\n## What the tester was doing\n{{ $json.promptNotes || 'Not provided.' }}\n\n## Environment\n{{ $json.promptEnvironment || 'Not provided.' }}\n\n## Error logs{{ $json.logsTruncated ? ' (truncated, head and tail kept)' : '' }}\n{{ $json.hasLogs ? $json.promptLogs : 'No logs provided.' }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a senior QA engineer who writes precise, reproducible Jira bug reports from a UI screenshot plus optional error logs and tester notes.\n\nRules:\n1. Report only what is visible in the screenshot or present in the logs and notes. Never invent URLs, versions, data or error text.\n2. Read on-screen text exactly (error banners, toasts, validation messages, HTTP status codes, URLs) and copy it verbatim into error_messages_detected, together with the key errors from the logs.\n3. steps_to_reproduce: short numbered actions another tester can follow. Use the tester notes when given. If a step is inferred from the screenshot rather than stated, end it with \"(inferred)\". The last step is the action that shows the bug.\n4. expected_result describes the correct behaviour. actual_result describes what the screenshot and logs show.\n5. visual_observations: every notable UI detail (broken layout, overlapping or cut-off text, wrong colour, missing icon, disabled button, stuck spinner, console or devtools content) with the element, where it is on screen, and what is wrong.\n6. severity: Critical = crash, data loss, security issue, or core flow blocked with no workaround. High = major feature broken. Medium = feature partly broken or a workaround exists. Low = cosmetic, text or alignment.\n7. title: \"<Area>: <what is wrong>\", at most 100 characters, no trailing period.\n8. labels: 1 to 4 short lowercase kebab-case tags such as ui, checkout, validation.\n9. If no logs were provided, write \"No logs provided.\" in log_analysis. suspected_cause is a hypothesis and must start with \"Hypothesis:\".\n10. List everything a developer would still need (exact URL, build, user role, test data, how often it happens) in missing_info. Set confidence to low when the screenshot is unclear or does not show a software bug.\n\nRespond only with the JSON object."
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary",
+              "binaryImageDataKey": "screenshot",
+              "imageDetail": "auto"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "ffa1047a-ee10-4163-a206-27c376f17f6e",
+      "name": "Analyze Screenshot",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -80,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.8-27b",
+        "options": {
+          "temperature": 0.2,
+          "maxTokensToSample": 1500
+        }
+      },
+      "id": "5b2115f1-fe30-4139-b87e-e0f8618967b3",
+      "name": "Groq Qwen 3.8 (vision)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        240
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "aQ0FOogbmgOx2D6A",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-flash-lite",
+        "options": {
+          "temperature": 0.2,
+          "maxTokens": 1500
+        }
+      },
+      "id": "2d93cc65-face-4a07-9ad9-2f4912894f5d",
+      "name": "OpenRouter Fallback (Gemini Flash-Lite)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\",\n      \"description\": \"\\\"<Area>: <what is wrong>\\\", max 100 characters\"\n    },\n    \"summary\": {\n      \"type\": \"string\",\n      \"description\": \"2-3 sentence description of the bug\"\n    },\n    \"severity\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"Critical\",\n        \"High\",\n        \"Medium\",\n        \"Low\"\n      ]\n    },\n    \"affected_area\": {\n      \"type\": \"string\",\n      \"description\": \"Page, screen or component where the bug appears\"\n    },\n    \"environment\": {\n      \"type\": \"string\",\n      \"description\": \"Browser / OS / device / URL / build, or \\\"Not provided\\\"\"\n    },\n    \"preconditions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"State needed before step 1, e.g. logged in as admin\"\n    },\n    \"steps_to_reproduce\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Numbered actions; inferred steps end with \\\"(inferred)\\\"\"\n    },\n    \"expected_result\": {\n      \"type\": \"string\",\n      \"description\": \"What should happen\"\n    },\n    \"actual_result\": {\n      \"type\": \"string\",\n      \"description\": \"What actually happens\"\n    },\n    \"visual_observations\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"element\": {\n            \"type\": \"string\"\n          },\n          \"location\": {\n            \"type\": \"string\"\n          },\n          \"observation\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"element\",\n          \"location\",\n          \"observation\"\n        ]\n      }\n    },\n    \"error_messages_detected\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Exact error text from the screenshot and logs\"\n    },\n    \"log_analysis\": {\n      \"type\": \"string\",\n      \"description\": \"What the logs show, or \\\"No logs provided.\\\"\"\n    },\n    \"suspected_cause\": {\n      \"type\": \"string\",\n      \"description\": \"Starts with \\\"Hypothesis:\\\"\"\n    },\n    \"labels\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"1-4 lowercase kebab-case tags\"\n    },\n    \"confidence\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"high\",\n        \"medium\",\n        \"low\"\n      ]\n    },\n    \"missing_info\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"Information a developer still needs\"\n    }\n  },\n  \"required\": [\n    \"title\",\n    \"summary\",\n    \"severity\",\n    \"affected_area\",\n    \"environment\",\n    \"preconditions\",\n    \"steps_to_reproduce\",\n    \"expected_result\",\n    \"actual_result\",\n    \"visual_observations\",\n    \"error_messages_detected\",\n    \"log_analysis\",\n    \"suspected_cause\",\n    \"labels\",\n    \"confidence\",\n    \"missing_info\"\n  ]\n}",
+        "autoFix": true
+      },
+      "id": "93a74418-d028-4561-bb36-b32f51e71130",
+      "name": "Bug Report Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "id": "99cd5489-c44b-410d-abb8-74008bcbc189",
+      "name": "Groq JSON Fixer (gpt-oss-20b)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        160,
+        440
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "aQ0FOogbmgOx2D6A",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn the model's JSON into Jira wiki markup (the Jira node posts to REST API v2).\nconst report = $input.first().json.output;\nconst input = $('Prepare Input').first();\nconst ctx = input.json;\n\nconst text = (s) => String(s ?? '').trim() || '_Not provided_';\nconst bullets = (arr, mark = '*') => (Array.isArray(arr) && arr.length)\n  ? arr.map((x) => mark + ' ' + String(x).trim()).join('\\n') : '_None_';\nconst cell = (s) => String(s ?? '').replace(/\\|/g, '/').replace(/\\s*\\n\\s*/g, ' ').trim() || ' ';\nconst steps = (report.steps_to_reproduce || []).map((s) => String(s).replace(/^\\s*\\d+[.)]\\s*/, ''));\n\nconst visuals = (report.visual_observations || []).length\n  ? '||Element||Location||Observation||\\n' + report.visual_observations\n      .map((v) => '|' + cell(v.element) + '|' + cell(v.location) + '|' + cell(v.observation) + '|').join('\\n')\n  : '_None_';\n\nconst logs = ctx.hasLogs\n  ? '{noformat}\\n' + ctx.logsForJira.replace(/\\{noformat\\}/gi, '(noformat)') + '\\n{noformat}'\n  : '_No logs provided._';\n\nconst description = [\n  'h3. Summary', text(report.summary), '',\n  '*Severity:* ' + report.severity + ' | *Confidence:* ' + report.confidence + ' | *Affected area:* ' + text(report.affected_area),\n  '*Environment:* ' + text(ctx.environment || report.environment), '',\n  'h3. Preconditions', bullets(report.preconditions), '',\n  'h3. Steps to Reproduce', bullets(steps, '#'), '',\n  'h3. Expected Result', text(report.expected_result), '',\n  'h3. Actual Result', text(report.actual_result), '',\n  'h3. Visual Observations', visuals, '',\n  'h3. Error Messages Detected', bullets(report.error_messages_detected), '',\n  'h3. Log Analysis', text(report.log_analysis), '',\n  'h3. Suspected Cause', text(report.suspected_cause), '',\n  'h3. Missing Information', bullets(report.missing_info), '',\n  'h3. Tester Notes', ctx.userNotes ? '{quote}' + ctx.userNotes + '{quote}' : '_Not provided_', '',\n  'h3. Error Logs', logs, '',\n  '----',\n  '_Drafted by the Screenshot-to-Bug-Reporter n8n agent from \"' + ctx.screenshotName + '\" on ' + ctx.submittedAt + '. Please review before triage._',\n].join('\\n');\n\nconst slug = (s) => String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');\nconst labels = [...new Set([\n  'ai-bug-report', 'from-screenshot', 'severity-' + slug(report.severity),\n  ...(report.labels || []).map(slug),\n])].filter(Boolean).slice(0, 8);\n\nreturn [{\n  json: {\n    summary: String(report.title || 'Bug from screenshot').replace(/\\s+/g, ' ').trim().slice(0, 250),\n    description,\n    labels,\n    severity: report.severity,\n    confidence: report.confidence,\n  },\n  binary: input.binary,\n}];"
+      },
+      "id": "1b817b58-0fdf-4af6-b839-b458bf4eedba",
+      "name": "Format Jira Description",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "KAN"
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "Bug"
+        },
+        "summary": "={{ $json.summary }}",
+        "additionalFields": {
+          "description": "={{ $json.description }}",
+          "labels": "={{ $json.labels }}"
+        }
+      },
+      "id": "49621640-2a89-4e14-83cf-46820eba0b53",
+      "name": "Create Jira Bug",
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -40
+      ],
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "R5GUFzrIM8e3KaF7",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// The Jira create response has no binary data, so re-attach the screenshot for the upload step.\nconst created = $input.first().json;\nconst formatted = $('Format Jira Description').first();\nreturn [{\n  json: {\n    key: created.key,\n    url: 'https://nancyverma0591.atlassian.net/browse/' + created.key,\n    title: formatted.json.summary,\n    severity: formatted.json.severity,\n    confidence: formatted.json.confidence,\n  },\n  binary: formatted.binary,\n}];"
+      },
+      "id": "ac059d16-d98b-4042-a373-3717fb872885",
+      "name": "Prepare Attachment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "issueAttachment",
+        "operation": "add",
+        "issueKey": "={{ $json.key }}",
+        "binaryPropertyName": "screenshot",
+        "options": {}
+      },
+      "id": "50dfa333-0a64-4f52-a85c-a0d61c0ad1b1",
+      "name": "Jira: Attach Screenshot",
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -40
+      ],
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "R5GUFzrIM8e3KaF7",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "=✅ Bug {{ $('Prepare Attachment').first().json.key }} created",
+        "completionMessage": "={{ $('Prepare Attachment').first().json.title }}\n\nSeverity: {{ $('Prepare Attachment').first().json.severity }} · AI confidence: {{ $('Prepare Attachment').first().json.confidence }}\n\nOpen it: {{ $('Prepare Attachment').first().json.url }}\n\nPlease review the drafted steps before triage.",
+        "options": {}
+      },
+      "id": "7a9bcab8-f65b-4c60-9c7e-44366f4133cb",
+      "name": "Success Page",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        -40
+      ],
+      "webhookId": "36f0a89d-a97e-4da5-a23e-afee8271c95d"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "❌ Bug could not be created",
+        "completionMessage": "={{ $json.error?.message || $json.error || 'Unknown error' }}\n\nCheck the file is a PNG/JPG/WEBP screenshot and try again. If it keeps failing, the AI model may be rate-limited (Groq free tier: 8K tokens/min). Wait a minute and resubmit.",
+        "options": {}
+      },
+      "id": "c37965f0-c4ac-427f-8659-8ec3bdebe9f7",
+      "name": "Error Page",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        260
+      ],
+      "webhookId": "db7c4c95-27d4-4fd9-94e5-abbd8c3538d9"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Bug Report Form": {
+      "main": [
+        [
+          {
+            "node": "Prepare Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Input": {
+      "main": [
+        [
+          {
+            "node": "Analyze Screenshot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Screenshot": {
+      "main": [
+        [
+          {
+            "node": "Format Jira Description",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Qwen 3.8 (vision)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Screenshot",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Fallback (Gemini Flash-Lite)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Screenshot",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Bug Report Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analyze Screenshot",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq JSON Fixer (gpt-oss-20b)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Bug Report Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Jira Description": {
+      "main": [
+        [
+          {
+            "node": "Create Jira Bug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Jira Bug": {
+      "main": [
+        [
+          {
+            "node": "Prepare Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Attachment": {
+      "main": [
+        [
+          {
+            "node": "Jira: Attach Screenshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira: Attach Screenshot": {
+      "main": [
+        [
+          {
+            "node": "Success Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a31b294c-6eee-4c1c-b96e-cb99a74aaa6c",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
