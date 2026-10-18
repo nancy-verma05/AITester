@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Bug Reporter · QAAfterHours</title>
+  <meta name="description" content="Turn a screenshot into a complete Jira bug report with AI. Built by QAAfterHours.">
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/">
+        <img src="/logo.svg" alt="" width="32" height="32">
+        <span class="brand-name">QA<span>AfterHours</span></span>
+      </a>
+      <span class="status" id="status" data-state="checking"><i></i><span>Checking connection…</span></span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">AI agent · n8n + Jira</p>
+      <h1>Screenshot → Bug Report</h1>
+      <p class="lede">Drop a screenshot of the bug and add logs if you have them. The agent writes the steps, expected vs actual result and severity, then files a Bug in Jira project <strong>KAN</strong> with the screenshot attached.</p>
+    </section>
+
+    <div class="layout">
+      <form class="card" id="form" novalidate>
+        <div class="field">
+          <label class="label" for="file">Screenshot <span class="req">required</span></label>
+          <div class="drop" id="drop" tabindex="0" role="button" aria-describedby="drop-hint">
+            <input type="file" id="file" name="screenshot" accept="image/png,image/jpeg,image/webp" hidden>
+            <div class="drop-empty" id="drop-empty">
+              <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <p><strong>Drop an image here</strong>, <u>browse</u>, or paste with <kbd>Ctrl</kbd>+<kbd>V</kbd></p>
+              <p class="muted" id="drop-hint">PNG, JPG or WEBP</p>
+            </div>
+            <div class="drop-preview" id="drop-preview" hidden>
+              <img id="preview-img" alt="Screenshot preview">
+              <div class="file-meta">
+                <span id="file-name"></span>
+                <span class="muted" id="file-size"></span>
+                <button type="button" class="link-btn" id="file-clear">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="notes">What were you doing?</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="e.g. Logged in as admin, opened Checkout, clicked Pay"></textarea>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label class="label" for="logs">Error logs</label>
+            <span class="muted small" id="logs-count">0 chars</span>
+          </div>
+          <textarea id="logs" name="logs" rows="5" class="mono" placeholder="Paste console output, a stack trace or an API error"></textarea>
+          <p class="hint">Passwords, tokens and API keys are removed before anything is sent to the AI.</p>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label class="label" for="environment">Environment</label>
+            <button type="button" class="link-btn" id="detect-env">Use my browser</button>
+          </div>
+          <input id="environment" name="environment" type="text" placeholder="e.g. Chrome 130 / Windows 11 / https://app.example.com/checkout / build 1.4.2">
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="submit">
+            <span class="btn-label">Create bug in Jira</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+          <span class="muted small">Usually takes 15–40 seconds</span>
+        </div>
+
+        <ol class="progress" id="progress" hidden>
+          <li data-step="0">Uploading screenshot</li>
+          <li data-step="1">AI is reading the screenshot and logs</li>
+          <li data-step="2">Writing the bug report</li>
+          <li data-step="3">Creating the Jira issue and attaching the screenshot</li>
+        </ol>
+
+        <div class="alert" id="error" role="alert" hidden></div>
+      </form>
+
+      <aside class="side">
+        <div class="card result" id="result" hidden>
+          <div class="result-head">
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <p class="muted small">Bug created</p>
+              <p class="result-key" id="r-key"></p>
+            </div>
+          </div>
+          <p class="result-title" id="r-title"></p>
+          <div class="chips" id="r-chips"></div>
+          <p class="hint" id="r-attach"></p>
+          <div class="result-actions">
+            <a class="btn-primary" id="r-link" target="_blank" rel="noopener">Open in Jira ↗</a>
+            <button type="button" class="btn-ghost" id="again">Report another</button>
+          </div>
+          <p class="hint">Review the drafted steps before triage.</p>
+        </div>
+
+        <div class="card">
+          <h2>How it works</h2>
+          <ol class="steps">
+            <li><b>Upload.</b> Your screenshot, notes and logs go to the n8n workflow. Secrets are removed and long logs are trimmed.</li>
+            <li><b>AI analysis.</b> A vision model (Groq Qwen, with Gemini as the fallback) reads the screen and fills in a fixed bug-report template.</li>
+            <li><b>Jira.</b> A Bug is created in <b>KAN</b> with the severity, labels and steps, and the screenshot is attached.</li>
+            <li><b>Result.</b> You get the issue key and a link here.</li>
+          </ol>
+        </div>
+
+        <div class="card" id="recent-card" hidden>
+          <div class="label-row">
+            <h2>Your recent reports</h2>
+            <button type="button" class="link-btn" id="recent-clear">Clear</button>
+          </div>
+          <ul class="recent" id="recent"></ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="wrap footer">
+    <span>© <span id="year"></span> QAAfterHours</span>
+    <span class="muted">Powered by n8n · Groq · Jira</span>
+  </footer>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
